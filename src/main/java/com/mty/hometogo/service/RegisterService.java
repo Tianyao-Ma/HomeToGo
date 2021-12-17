@@ -1,5 +1,6 @@
 package com.mty.hometogo.service;
 
+import com.mty.hometogo.exception.UserAlreadyExistException;
 import com.mty.hometogo.model.Authority;
 import com.mty.hometogo.model.User;
 import com.mty.hometogo.model.UserRole;
@@ -22,7 +23,10 @@ public class RegisterService {
     }
     // help maintain the atomic of db writing;
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public void add(User user, UserRole role) {
+    public void add(User user, UserRole role) throws UserAlreadyExistException {
+        if (userRepository.existsById(user.getUsername())) {
+            throw new UserAlreadyExistException("User already exists");
+        }
         //jpa helps auto write into db
         userRepository.save(user);
         authorityRepository.save(new Authority(user.getUsername(), role.name()));
