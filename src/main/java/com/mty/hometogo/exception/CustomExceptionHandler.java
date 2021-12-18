@@ -1,4 +1,4 @@
-package com.mty.hometogo.controller;
+package com.mty.hometogo.exception;
 
 import com.mty.hometogo.exception.UserAlreadyExistException;
 import org.springframework.http.HttpStatus;
@@ -15,4 +15,11 @@ public class CustomExceptionHandler {
     public final ResponseEntity<String> handleUserAlreadyExistExceptions(Exception ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(UserNotExistException.class)
+    public final ResponseEntity<String> handleUserNotExistExceptions(Exception ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+
+    }
+
 }
