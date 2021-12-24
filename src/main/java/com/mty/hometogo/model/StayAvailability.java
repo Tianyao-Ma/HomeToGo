@@ -17,8 +17,8 @@ public class StayAvailability implements Serializable {
     // @ManyToOne create a column function as foreignKey to connect with stay talbe;
     // however, we don't want to create an empty stay column, instead, we want to use stayId as the pk, so we
     // joincolumn, which is equal to delete the empty stay role;
+    @MapsId("stay_id")
     @ManyToOne
-    @JoinColumn(name = "stay_id")
     private Stay stay;
     private StayAvailabilityState state;
 

@@ -2,13 +2,17 @@ package com.mty.hometogo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name="stay")
-public class Stay {
+@JsonDeserialize(builder = Stay.Builder.class)
+public class Stay implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -20,7 +24,8 @@ public class Stay {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User host;
-
+    @OneToMany(mappedBy = "stay", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<StayImage> images;
     @JsonIgnore
     @OneToMany(mappedBy = "stay", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StayAvailability> availabilities;
@@ -35,6 +40,7 @@ public class Stay {
         this.guestNumber = builder.guestNumber;
         this.host = builder.host;
         this.availabilities = builder.availabilities;
+        this.images = builder.images;
     }
 
     public Long getId() {
@@ -69,6 +75,14 @@ public class Stay {
         this.availabilities = availabilities;
         return this;
     }
+    public List<StayImage> getImages() {
+        return images;
+    }
+
+    public Stay setImages(List<StayImage> images) {
+        this.images = images;
+        return this;
+    }
 
     public static class Builder {
 
@@ -92,6 +106,9 @@ public class Stay {
 
         @JsonProperty("availabilities")
         private List<StayAvailability> availabilities;
+
+        @JsonProperty("images")
+        private List<StayImage> images;
 
         public Builder setId(Long id) {
             this.id = id;
