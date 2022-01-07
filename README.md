@@ -20,18 +20,19 @@ This project recreated the online rental system with SpringBoot and ReactJs. The
 </p>
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
-
+<!-- 
 ## :film_strip: Project Demo
 <p align="center">
-<img src="https://user-images.githubusercontent.com/78308927/132066901-2767be0a-0aa8-4828-b77e-bcc45bc8348e.gif" width="800">
-</p>
+
+</p>> -->
 
 ## 🤖 Tech Stack
 
 * Java
 * Spring
 * Hibernate
-* Postgres
+* Google Cloud Storage
+* My SQL
 * React
 * Ant Design 3
 * Amazon Web Services
