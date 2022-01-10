@@ -1,4 +1,4 @@
-# HomeToGo :tent:
+# HomeToGo :tent: (In-Progress)
 
 <p align="center">
 <img src="https://img.shields.io/badge/Backend-%20Java | Spring %20-F6922B.svg">
