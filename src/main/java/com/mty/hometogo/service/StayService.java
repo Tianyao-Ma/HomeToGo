@@ -1,6 +1,9 @@
 package com.mty.hometogo.service;
 
+import com.mty.hometogo.exception.StayDeleteException;
 import com.mty.hometogo.model.*;
+import com.mty.hometogo.repository.LocationRepository;
+import com.mty.hometogo.repository.ReservationRepository;
 import com.mty.hometogo.repository.StayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +18,17 @@ import java.util.stream.Collectors;
 @Service
 public class StayService {
     private StayRepository stayRepository;
+    private LocationRepository locationRepository;
+    private ReservationRepository reservationRepository;
     private ImageStorageService imageStorageService;
+    private GeoEncodingService geoEncodingService;
     @Autowired
-    public StayService(StayRepository stayRepository, ImageStorageService imageStorageService) {
+    public StayService(StayRepository stayRepository, LocationRepository locationRepository,ReservationRepository reservationRepository,ImageStorageService imageStorageService, GeoEncodingService geoEncodingService) {
         this.stayRepository = stayRepository;
+        this.locationRepository = locationRepository;
+        this.reservationRepository = reservationRepository;
         this.imageStorageService = imageStorageService;
+        this.geoEncodingService = geoEncodingService;
     }
     public List<Stay> listByUser(String username) {
         return stayRepository.findByHost(new User.Builder().setUsername(username).build());
@@ -44,10 +53,18 @@ public class StayService {
         }
         stay.setImages(stayImages);
         stayRepository.save(stay);
+
+        Location location = geoEncodingService.getLatLng(stay.getId(), stay.getAddress());
+        locationRepository.save(location);
     }
 
-    public void delete(Long stayId) {
+    public void delete(Long stayId) throws StayDeleteException {
+        List<Reservation> reservations = reservationRepository.findByStayAndCheckoutDateAfter(new Stay.Builder().setId(stayId).build(), LocalDate.now());
+        if (reservations != null && reservations.size() > 0) {
+            throw new StayDeleteException("Cannot delete stay with active reservation");
+        }
         stayRepository.deleteById(stayId);
     }
+
 
 }
